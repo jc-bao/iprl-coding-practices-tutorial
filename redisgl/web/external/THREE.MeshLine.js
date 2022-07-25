@@ -1,4 +1,5 @@
-;(function() {
+;
+(function () {
   'use strict'
 
   var root = this
@@ -9,8 +10,7 @@
   if (!THREE) throw new Error('MeshLine requires three.js')
 
   class MeshLine extends THREE.BufferGeometry {
-    constructor()
-    {
+    constructor() {
       super();
       this.isMeshLine = true;
       this.type = 'MeshLine'
@@ -37,16 +37,16 @@
         // add getter to support previous api
         geometry: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this
           },
         },
         geom: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this._geom
           },
-          set: function(value) {
+          set: function (value) {
             this.setGeometry(value, this.widthCallback)
           },
         },
@@ -56,10 +56,10 @@
         // console.log(this.points) -> points
         points: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this._points
           },
-          set: function(value) {
+          set: function (value) {
             this.setPoints(value, this.widthCallback)
           },
         },
@@ -67,55 +67,55 @@
     }
   }
 
-  MeshLine.prototype.setMatrixWorld = function(matrixWorld) {
+  MeshLine.prototype.setMatrixWorld = function (matrixWorld) {
     this.matrixWorld = matrixWorld
   }
 
   // setting via a geometry is rather superfluous
   // as you're creating a unecessary geometry just to throw away
   // but exists to support previous api
-  MeshLine.prototype.setGeometry = function(g, c) {
-		// as the input geometry are mutated we store them
-		// for later retreival when necessary (declaritive architectures)
-		this._geometry = g;
-        this.setPoints(g.getAttribute("position").array, c);
+  MeshLine.prototype.setGeometry = function (g, c) {
+    // as the input geometry are mutated we store them
+    // for later retreival when necessary (declaritive architectures)
+    this._geometry = g;
+    this.setPoints(g.getAttribute("position").array, c);
   }
 
-  MeshLine.prototype.setPoints = function(points, wcb) {
-		if (!(points instanceof Float32Array) && !(points instanceof Array)) {
-			console.error(
-				"ERROR: The BufferArray of points is not instancied correctly."
-			);
-			return;
-		}
-		// as the points are mutated we store them
-		// for later retreival when necessary (declaritive architectures)
-		this._points = points;
-		this.widthCallback = wcb;
-		this.positions = [];
-		this.counters = [];
-		if (points.length && points[0] instanceof THREE.Vector3) {
-			// could transform Vector3 array into the array used below
-			// but this approach will only loop through the array once
-			// and is more performant
-			for (var j = 0; j < points.length; j++) {
-				var p = points[j];
-				var c = j / points.length;
-				this.positions.push(p.x, p.y, p.z);
-				this.positions.push(p.x, p.y, p.z);
-				this.counters.push(c);
-				this.counters.push(c);
-			}
-		} else {
-			for (var j = 0; j < points.length; j += 3) {
-				var c = j / points.length;
-				this.positions.push(points[j], points[j + 1], points[j + 2]);
-				this.positions.push(points[j], points[j + 1], points[j + 2]);
-				this.counters.push(c);
-				this.counters.push(c);
-			}
-		}
-		this.process();
+  MeshLine.prototype.setPoints = function (points, wcb) {
+    if (!(points instanceof Float32Array) && !(points instanceof Array)) {
+      console.error(
+        "ERROR: The BufferArray of points is not instancied correctly."
+      );
+      return;
+    }
+    // as the points are mutated we store them
+    // for later retreival when necessary (declaritive architectures)
+    this._points = points;
+    this.widthCallback = wcb;
+    this.positions = [];
+    this.counters = [];
+    if (points.length && points[0] instanceof THREE.Vector3) {
+      // could transform Vector3 array into the array used below
+      // but this approach will only loop through the array once
+      // and is more performant
+      for (var j = 0; j < points.length; j++) {
+        var p = points[j];
+        var c = j / points.length;
+        this.positions.push(p.x, p.y, p.z);
+        this.positions.push(p.x, p.y, p.z);
+        this.counters.push(c);
+        this.counters.push(c);
+      }
+    } else {
+      for (var j = 0; j < points.length; j += 3) {
+        var c = j / points.length;
+        this.positions.push(points[j], points[j + 1], points[j + 2]);
+        this.positions.push(points[j], points[j + 1], points[j + 2]);
+        this.counters.push(c);
+        this.counters.push(c);
+      }
+    }
+    this.process();
   }
 
   function MeshLineRaycast(raycaster, intersects) {
@@ -134,7 +134,7 @@
       return
     }
 
-    inverseMatrix.copy( this.matrixWorld ).invert();
+    inverseMatrix.copy(this.matrixWorld).invert();
     ray.copy(raycaster.ray).applyMatrix4(inverseMatrix)
 
     var vStart = new THREE.Vector3()
@@ -185,7 +185,7 @@
     }
   }
   MeshLine.prototype.raycast = MeshLineRaycast
-  MeshLine.prototype.compareV3 = function(a, b) {
+  MeshLine.prototype.compareV3 = function (a, b) {
     var aa = a * 6
     var ab = b * 6
     return (
@@ -195,12 +195,12 @@
     )
   }
 
-  MeshLine.prototype.copyV3 = function(a) {
+  MeshLine.prototype.copyV3 = function (a) {
     var aa = a * 6
     return [this.positions[aa], this.positions[aa + 1], this.positions[aa + 2]]
   }
 
-  MeshLine.prototype.process = function() {
+  MeshLine.prototype.process = function () {
     var l = this.positions.length / 6
 
     this.previous = []
@@ -315,11 +315,11 @@
     src = src.subarray || src.slice ? src : src.buffer
     dst = dst.subarray || dst.slice ? dst : dst.buffer
 
-    src = srcOffset
-      ? src.subarray
-        ? src.subarray(srcOffset, length && srcOffset + length)
-        : src.slice(srcOffset, length && srcOffset + length)
-      : src
+    src = srcOffset ?
+      src.subarray ?
+      src.subarray(srcOffset, length && srcOffset + length) :
+      src.slice(srcOffset, length && srcOffset + length) :
+      src
 
     if (dst.set) {
       dst.set(src, dstOffset)
@@ -336,7 +336,7 @@
    * Fast method to advance the line by one position.  The oldest position is removed.
    * @param position
    */
-  MeshLine.prototype.advance = function(position) {
+  MeshLine.prototype.advance = function (position) {
     var positions = this._attributes.position.array
     var previous = this._attributes.previous.array
     var next = this._attributes.next.array
@@ -491,26 +491,57 @@
   ].join('\n')
 
   class MeshLineMaterial extends THREE.ShaderMaterial {
-    constructor(parameters)
-    {
+    constructor(parameters) {
       super({
         uniforms: Object.assign({}, THREE.UniformsLib.fog, {
-          lineWidth: { value: 1 },
-          map: { value: null },
-          useMap: { value: 0 },
-          alphaMap: { value: null },
-          useAlphaMap: { value: 0 },
-          color: { value: new THREE.Color(0xffffff) },
-          opacity: { value: 1 },
-          resolution: { value: new THREE.Vector2(1, 1) },
-          sizeAttenuation: { value: 1 },
-          dashArray: { value: 0 },
-          dashOffset: { value: 0 },
-          dashRatio: { value: 0.5 },
-          useDash: { value: 0 },
-          visibility: { value: 1 },
-          alphaTest: { value: 0 },
-          repeat: { value: new THREE.Vector2(1, 1) },
+          lineWidth: {
+            value: 1
+          },
+          map: {
+            value: null
+          },
+          useMap: {
+            value: 0
+          },
+          alphaMap: {
+            value: null
+          },
+          useAlphaMap: {
+            value: 0
+          },
+          color: {
+            value: new THREE.Color(0xffffff)
+          },
+          opacity: {
+            value: 1
+          },
+          resolution: {
+            value: new THREE.Vector2(1, 1)
+          },
+          sizeAttenuation: {
+            value: 1
+          },
+          dashArray: {
+            value: 0
+          },
+          dashOffset: {
+            value: 0
+          },
+          dashRatio: {
+            value: 0.5
+          },
+          useDash: {
+            value: 0
+          },
+          visibility: {
+            value: 1
+          },
+          alphaTest: {
+            value: 0
+          },
+          repeat: {
+            value: new THREE.Vector2(1, 1)
+          },
         }),
 
         vertexShader: THREE.ShaderChunk.meshline_vert,
@@ -523,146 +554,146 @@
       Object.defineProperties(this, {
         lineWidth: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.lineWidth.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.lineWidth.value = value
           },
         },
         map: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.map.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.map.value = value
           },
         },
         useMap: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.useMap.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.useMap.value = value
           },
         },
         alphaMap: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.alphaMap.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.alphaMap.value = value
           },
         },
         useAlphaMap: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.useAlphaMap.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.useAlphaMap.value = value
           },
         },
         color: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.color.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.color.value = value
           },
         },
         opacity: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.opacity.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.opacity.value = value
           },
         },
         resolution: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.resolution.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.resolution.value.copy(value)
           },
         },
         sizeAttenuation: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.sizeAttenuation.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.sizeAttenuation.value = value
           },
         },
         dashArray: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.dashArray.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.dashArray.value = value
             this.useDash = value !== 0 ? 1 : 0
           },
         },
         dashOffset: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.dashOffset.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.dashOffset.value = value
           },
         },
         dashRatio: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.dashRatio.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.dashRatio.value = value
           },
         },
         useDash: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.useDash.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.useDash.value = value
           },
         },
         visibility: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.visibility.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.visibility.value = value
           },
         },
         alphaTest: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.alphaTest.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.alphaTest.value = value
           },
         },
         repeat: {
           enumerable: true,
-          get: function() {
+          get: function () {
             return this.uniforms.repeat.value
           },
-          set: function(value) {
+          set: function (value) {
             this.uniforms.repeat.value.copy(value)
           },
         },
@@ -672,7 +703,7 @@
     }
   }
 
-  MeshLineMaterial.prototype.copy = function(source) {
+  MeshLineMaterial.prototype.copy = function (source) {
     THREE.ShaderMaterial.prototype.copy.call(this, source)
 
     this.lineWidth = source.lineWidth

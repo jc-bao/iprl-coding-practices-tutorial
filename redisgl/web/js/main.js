@@ -22,16 +22,16 @@ function htmlForm(key, val, set, del) {
   form += "\t\t</div>\n";
   form += "\t</div>\n";
   form += "\t<div class='val-body'>\n";
-  if (typeof(val) === "string") {
+  if (typeof (val) === "string") {
     form += "\t\t<div class='val-row'>\n";
     form += "\t\t\t<div class='val-string'>\n";
     form += "\t\t\t\t<textarea class='val'>" + val + "</textarea>\n";
     form += "\t\t\t</div>\n";
     form += "\t\t</div>\n";
   } else { // val should be a 2D array
-    val.forEach(function(row, idx_row) {
+    val.forEach(function (row, idx_row) {
       form += "\t\t<div class='val-row'>\n";
-      row.forEach(function(el, idx) {
+      row.forEach(function (el, idx) {
         var f = (Math.round(parseFloat(el) * 10000) / 10000).toString()
         form += "\t\t\t<input class='val' type='text' value='" + f + "'>\n";
       });
@@ -66,7 +66,7 @@ function addRedisForm(key, val, set, del, verbose, callback) {
   var $li = $(li).hide();
 
   // Find alphabetical ordering
-  var keys = $("form").map(function() {
+  var keys = $("form").map(function () {
     return $(this).attr("data-key");
   }).get();
   var idx_key;
@@ -92,7 +92,7 @@ function updateRedisForm(key, val, set, del, verbose) {
 
   // Update string
   var $inputs = $form.find(".val");
-  if (typeof(val) === "string") {
+  if (typeof (val) === "string") {
     $inputs.eq(0).val(val);
     return;
   }
@@ -107,8 +107,8 @@ function updateRedisForm(key, val, set, del, verbose) {
 
   // Update matrix
   var i = 0;
-  val.forEach(function(row) {
-    row.forEach(function(el) {
+  val.forEach(function (row) {
+    row.forEach(function (el) {
       var f = (Math.round(parseFloat(el) * 10000) / 10000).toString()
       $inputs.eq(i).val(f);
       i++;
@@ -119,7 +119,7 @@ function updateRedisForm(key, val, set, del, verbose) {
 function deleteHtmlKey(key) {
   var $form = $("form[data-key='" + key + "']");
   if ($form.length == 0) return;
-  $form.slideUp("normal", function() {
+  $form.slideUp("normal", function () {
     $form.remove();
   });
 }
@@ -127,30 +127,30 @@ function deleteHtmlKey(key) {
 function getMatrix($form) {
   if ($form.find("div.val-string").length > 0)
     return $form.find("textarea.val").val();
-  return $form.find("div.val-row").map(function() {
-    return [$(this).find("input.val").map(function() {
+  return $form.find("div.val-row").map(function () {
+    return [$(this).find("input.val").map(function () {
       return parseFloat($(this).val());
     }).get().filter(el => el !== "")];
   }).get();
 }
 
 function fillMatrix(matrix, num) {
-  matrix.forEach(function(row) {
-    row.forEach(function(el, idx) {
+  matrix.forEach(function (row) {
+    row.forEach(function (el, idx) {
       row[idx] = num.toString();
     });
   });
 }
 
 function matrixToString(matrix) {
-  if (typeof(matrix) === "string") return matrix;
-  return matrix.map(function(row) {
+  if (typeof (matrix) === "string") return matrix;
+  return matrix.map(function (row) {
     return row.join(" ");
   }).join("; ");
 }
 
 function matrixDim(val) {
-  if (typeof(val) === "string") return "";
+  if (typeof (val) === "string") return "";
   return [val.length, val[0].length].toString();
 }
 
@@ -219,4 +219,3 @@ function axes(size, line_width, colors) {
   xyz.add(z);
   return xyz;
 }
-
