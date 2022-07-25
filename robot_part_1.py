@@ -15,19 +15,26 @@ from simulator import RobotSimulator
 
 
 class RobotController:
+  """Summary
+  What I like: 
+  What I do not like: 
+    functions only use states, do not know the input
+    name of function: s and not s
+  """
   def __init__(self, simulator, pd_gains, joint_position_goal):
-    self.simulator = simulator
-    self.pd_gains = pd_gains
+    self.simulator:RobotSimulator = simulator
+    self.pd_gains:dict = pd_gains
     self.joint_position_goal = joint_position_goal
     self.error = None
 
   def run(self):
     """Runs the controller until it reaches the goal."""
-    while self.is_done() is False:
+    while not self.is_done():
       # Compute torque output and step.
       self.update_control()
       self.simulator.step()
 
+    # NOTE What is this about?
     assert self.error is not None
     print()
     print(f"Time elapsed: {simulator.get_simulation_time()} seconds.")
@@ -35,13 +42,16 @@ class RobotController:
 
   def update_control(self):
     """Compute PD control output and pass it to the simulator."""
-    kp = self.pd_gains["Kp"]
-    kd = self.pd_gains["Kd"]
+    # ERROR Kp -> kp
+    kp = self.pd_gains["kp"]
+    kd = self.pd_gains["kd"]
 
-    error = self.joint_position_goal - self.simulator.get_joint_position()
-    velocity = self.simulator.get_joint_velocity()
+    # NOTE When to use s, when not
+    # ERROR not using s
+    error = self.joint_position_goal - self.simulator.get_joint_positions()
+    velocity = self.simulator.get_joint_velocities()
     joint_acceleration = kp * error - kd * velocity
-    self.simulator.set_joint_acceleration(joint_acceleration)
+    self.simulator.set_joint_accelerations(joint_acceleration)
     self.error = error
 
   def is_done(self):
